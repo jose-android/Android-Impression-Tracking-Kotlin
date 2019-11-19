@@ -6,18 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.impressiontutorialstepthrough.analytic.TrackerAdapter
+import com.example.impressiontutorialstepthrough.model.DataModel
+import com.example.impressiontutorialstepthrough.model.DataTracking
 import java.util.*
 
 /**
  * Created by User on 1/18/16.
  */
-class ImpressionAdapter(activity: Activity, private val mDataSet: List<String>) : RecyclerView.Adapter<ProductViewHolder>() {
-    private var mVisibilityTracker: VisibilityTracker
+class ImpressionAdapter(activity: Activity, private val mDataSet: List<DataModel>) : RecyclerView.Adapter<ProductViewHolder>(), TrackerAdapter {
+    private var mVisibilityTracker: VisibilityTracker = VisibilityTracker(activity)
     private val mViewPositionMap = WeakHashMap<View, Int>()
 
     init {
-        mVisibilityTracker = VisibilityTracker(activity)
-
         mVisibilityTracker.setVisibilityTrackerListener(object : VisibilityTracker.VisibilityTrackerListener {
             override fun onVisibilityChanged(visibleViews: List<View>, invisibleViews: List<View>) {
                 handleVisibleViews(visibleViews)
@@ -26,16 +27,18 @@ class ImpressionAdapter(activity: Activity, private val mDataSet: List<String>) 
     }
 
     private fun handleVisibleViews(visibleViews: List<View>) {
-        Log.d(ImpressionAdapter::class.java.getSimpleName(), "Currently visible views \n")
+        Log.d(ImpressionAdapter::class.java.simpleName, "Currently visible views \n")
         for (v in visibleViews) {
             val viewPosition = mViewPositionMap[v]
             val viewTitle = mDataSet[viewPosition!!]
-            Log.d(ImpressionAdapter::class.java.getSimpleName(), viewTitle)
+            Log.d(ImpressionAdapter::class.java.simpleName, viewTitle.nombre ?: "")
         }
 
-        Log.d(ImpressionAdapter::class.java.getSimpleName(), "------------------------------")
+        Log.d(ImpressionAdapter::class.java.simpleName, "------------------------------")
 
     }
+
+    override var data: List<DataTracking> =  mDataSet
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ProductViewHolder {
         val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.product_item_layout, viewGroup, false)
@@ -46,10 +49,10 @@ class ImpressionAdapter(activity: Activity, private val mDataSet: List<String>) 
         val title = mDataSet[position]
 
         productViewHolder.itemView.setBackgroundResource(if (position % 2 == 0) android.R.color.white else android.R.color.darker_gray)
-        productViewHolder.mTitleTextView.text = title
+        productViewHolder.mTitleTextView.text = title.nombre
 
         mViewPositionMap[productViewHolder.itemView] = position
-        mVisibilityTracker.addView(productViewHolder.itemView, 0)
+        mVisibilityTracker.addView(productViewHolder.itemView, 100)
     }
 
     override fun getItemCount(): Int {

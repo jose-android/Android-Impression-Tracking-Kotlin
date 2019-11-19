@@ -24,7 +24,7 @@ class VisibilityTracker(activity: Activity) {
 
     internal class TrackingInfo {
         var mRootView: View? = null
-        var mMinVisiblePercent: Int = 0
+        var mMinVisiblePercent: Int = 100
     }
 
     init {
@@ -42,7 +42,7 @@ class VisibilityTracker(activity: Activity) {
             }
             viewTreeObserver.addOnPreDrawListener(mOnPreDrawListener)
         } else {
-            Log.d(VisibilityTracker::class.java.getSimpleName(), "Visibility tracker root view is not alive")
+            Log.d(VisibilityTracker::class.java.simpleName, "Visibility tracker root view is not alive")
         }
     }
 
@@ -126,6 +126,6 @@ class VisibilityTracker(activity: Activity) {
     }
 
     companion object {
-        private val VISIBILITY_CHECK_DELAY_MILLIS: Long = 100
+        const val VISIBILITY_CHECK_DELAY_MILLIS: Long = 1000
     }
 }
